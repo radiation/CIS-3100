@@ -9,7 +9,7 @@ int main() {
     // Doubles in case our numbers get long
     double x = -3, y, numerator, denominator;
 
-    // Using a decorator so we don't have to rewrite the math in the cout statement
+    // Using a decorator so we only need one COUT statement
     string decorator;
 
     while (x <= 4.0) {
@@ -20,13 +20,12 @@ int main() {
         y = numerator / denominator;
 
         // If there were a lot of conditions, we'd use a switch statement
-        if (y == 0) {
+        if (y == 0)
             decorator = "ZERO";
-        } else if (y < 0) {
+        else if (y < 0)
             decorator = "NEGATIVE";
-        } else {
+        else
             decorator = "POSITIVE";
-        }
 
         // And let's print the output
         cout << "x=" << x << ", y = " << y << ", Y IS " << decorator << endl;

@@ -1,9 +1,12 @@
 #include<iostream>
+#include<iomanip>
 using namespace std;
 
 int numbers[4];
 
 int main() {
+    cout << fixed << setprecision(2);
+
     int num_shares;
     double purchase_price, current_price;
     cout << "Enter the number of shares: \n";

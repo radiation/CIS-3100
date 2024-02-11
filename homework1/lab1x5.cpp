@@ -7,7 +7,7 @@ string adjective[3];
 string adverb[3];
 
 int main() {
-    cout << "I'll ask you for three each of nouns, verbs, adjectives, and adverbs, and then I'll tell you story.  Ready?\n";
+    cout << "I'll ask you for three each of nouns, verbs, adjectives, and adverbs, and then I'll tell you a story.  Ready?\n";
     for (int i = 0; i < 3; i++) {
         cout << "Enter a noun: \n";
         cin >> noun[i];
