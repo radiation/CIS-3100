@@ -19,6 +19,7 @@
  */
 
 #include <iostream>
+#include <iomanip> // for std::setprecision
 using namespace std;
 
 int main() {
@@ -86,7 +87,11 @@ int main() {
         totalTax += remainingSalary * taxBrackets[numBrackets-1][1];
     }
 
-    cout << "Your total tax is " << totalTax << endl;
+    // Make sure we display two decimal places
+    std::cout << std::fixed << std::setprecision(2);
+
+    // And final output
+    cout << "This year you paid $" << totalTax << " in tax, so your net salary after tax is $" << salary - totalTax << ".\n";
 
     return 0;
 }
