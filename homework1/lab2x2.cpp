@@ -1,8 +1,8 @@
 /*
     I know I overcomplicated this, but using marginal tax rates was much more interesting than a flat tax.  I opted
-    to use a two-dimensional array to store the tax brackets and their respective marginal tax rates; I then iterated
-    through the array to calculate the total tax based on the salary.  This makes it much easier to add or remove
-    tax brackets, and the code is much more readable than a series of if-else statements.
+    to use a two-dimensional array to store the tax brackets and their respective marginal tax rates; I then iterate
+    through the array to calculate the total tax based on the salary.  Using some sort of iterable makes it much 
+    easier to add or remove tax brackets, and reducing tech debt is critical in the real world.
 
     Test data:
 
@@ -27,7 +27,7 @@ int main() {
     /*
         Two dimensional array of tax brackets.  The first element is the amount up to which the current marginal rate 
         applies, and the second is the marginal tax rate itself.  I would have used a struct, but we haven't covered
-        those yet.
+        those yet and I'm already getting pretty aggressive with the logic.
     */
     const double taxBrackets[][2] = {
         {0, 0.06},
@@ -35,6 +35,8 @@ int main() {
         {38000, 0.33},
         {55000, 0.50}
     };
+
+    // Pretty wild that there's no simple length function for arrays in C++, but this is the best way to do it
     const int numBrackets = sizeof(taxBrackets)/sizeof(taxBrackets[0]);
 
     // Variable definitions
@@ -55,7 +57,7 @@ int main() {
     // Reduce salary by 5% for each dependent and use this for calculations
     double remainingSalary = salary * (1 - (0.05 * dependendents));
 
-    // If student loan interest was paid, reduce salary by that amount
+    // If student loan interest was paid, reduce salary by that amount.
     if (studentLoanInterestYN == 'y') {
         // No need to declare this if there was no student loan interest so we do it in the if statement
         double studentLoanInterest;
@@ -77,7 +79,7 @@ int main() {
         // We could've used a ternary operator here, but I think this is more readable
         double taxableAmount = std::min(remainingSalary , taxBrackets[i+1][0] - taxBrackets[i][0]);
 
-        // Add tax, reduce remaining taxable salary
+        // Add tax and reduce remaining taxable salary
         totalTax += taxableAmount * taxBrackets[i][1];
         remainingSalary -= taxableAmount;
     }
