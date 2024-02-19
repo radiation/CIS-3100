@@ -58,7 +58,7 @@ int main() {
     double remainingSalary = salary * (1 - (0.05 * dependendents));
 
     // If student loan interest was paid, reduce salary by that amount.
-    if (studentLoanInterestYN == 'y') {
+    if (studentLoanInterestYN == 'y' || studentLoanInterestYN == 'Y') {
         // No need to declare this if there was no student loan interest so we do it in the if statement
         double studentLoanInterest;
         cout << "How much student loan interest did you pay? ";
@@ -85,9 +85,8 @@ int main() {
     }
 
     // If there's anything left, add the final tax bracket
-    if (remainingSalary > 0) {
+    if (remainingSalary > 0)
         totalTax += remainingSalary * taxBrackets[numBrackets-1][1];
-    }
 
     // Make sure we display two decimal places
     std::cout << std::fixed << std::setprecision(2);
