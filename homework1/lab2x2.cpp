@@ -16,6 +16,8 @@
      $80,000, 2 deps, no int = $21,850 (12000*0.06 + 26000*0.27 + 16000*0.33 + 25000*0.50)
     $100,000, 0 deps, no int = $35,850 (12000*0.06 + 26000*0.27 + 17000*0.33 + 45000*0.50)
     $100,000, 2 deps, no int = $30,850 (12000*0.06 + 26000*0.27 + 17000*0.33 + 40000*0.50)
+
+    Adding loan interest just reduces the overall taxable salary, so it's not too interesting to test, but it works.
  */
 
 #include <iostream>
