@@ -4,68 +4,63 @@
 #include <cmath>
 using namespace std;
 
-int gridWidth=30, gridHeight=30;
-
-void drawMap(int curX, int curY) {
-
-    // For readability
-    cout << endl;
-
-    // X axis
-    for (int i=0; i<gridWidth; i++) {
-
-        // Y axis
-        for (int j=0; j<gridHeight; j++) {
-
-            if (i==curY && j==curX) {
-                // Draw the explorer
-                cout << " X";
-            } else if (i==0 || i==gridWidth-1) {
-                // Draw the top and bottom borders
-                cout << " -";
-            } else if (j==0 || j==gridHeight-1) {
-                // Draw the left and right borders
-                cout << " |";
-            } else {
-                // Add an empty space
-                cout << "  ";
-            }
-
-        }
-        cout << endl;
-
-    }
-
-}
-
 int main () {
 
-    int x=15,y=15; // Explorer’s coordinates
-    int x1,y1; // Treasure’s coordinates
-    int moves=0; // Keep track of your bet score
+    // These need to be constants so we can use them to define the size of the array
+    const int gridWidth=30, gridHeight=30;
 
-    char direction;
-    float distance;
-    bool treasure=false;
+    // Store map in two-dimensional array
+    string mapVisual[gridWidth][gridHeight];
 
+    // Populate the map grid
+    for (int i=0; i<gridWidth; i++) // X axis
+        for (int j=0; j<gridHeight; j++) // Y axis
+            if (i==0 || i==gridWidth-1)
+                mapVisual[i][j] = "--";  // Draw the top and bottom borders
+            else if (j==0 || j==gridHeight-1)
+                mapVisual[i][j] = " |"; // Draw the left and right borders
+            else
+                mapVisual[i][j] = "  "; // Add an empty space
+
+    int x=15,y=15; // Starting coordinates
+    int x1,y1; // Treasure coordinates
+    int moves=0; // How long did it take you?
+    char direction; // Where to move
+    float distance; // How far away from the treasure
+    bool treasure=false; // Have you found the treasure?
+
+    mapVisual[y][x] = " X"; // Show the starting position
+
+    // It'd be a pretty boring game if you knew where the treasure was every time
     srand(time(0));
     x1=rand() % gridWidth + 1;
     y1=rand() % gridHeight + 1;
 
+    // Welcome message
+    cout << "\nWelcome to Treasure Hunter!  You are currently at (" << x << "," << y << ")." << endl;
+
     while (!treasure) {
 
-        // I find visual aids are helpful
-        drawMap(x, y);
+        // Let's show them where they are and where they've been
+        for (int i=0; i<gridWidth; i++) {
+            for (int j=0; j<gridHeight; j++) {
+                cout << mapVisual[i][j];
+            }
+            cout << endl;
+        }
+
+        // Show us where we've already been
+        mapVisual[y][x] = " .";
 
         // Prompt for input
-        cout << "You are currently at (" << x << "," << y << ")." << endl;
-        cout << "Enter the direction you want to move (N, S, E, W): ";
+        cout << "\nYou are currently at (" << x << "," << y << ")." << endl;
+        cout << "Enter the direction you want to move (N, S, E, W) or Q to quit: ";
         cin >> direction;
 
         // Increment the move counter
         moves++;
 
-        // Move the explorer
+        // Move the treasure hunter
         switch (direction) {
             case 'N':
             case 'n':
@@ -83,20 +78,26 @@ int main () {
             case 'w':
                 x--;
                 break;
+            case 'Q':
+            case 'q':
+                cout << "You have quit the game." << endl;
+                return 0;
             default:
                 cout << "Invalid direction.  Please try again." << endl;
                 continue;
         }
+
+        mapVisual[y][x] = " X";
 
         // Give them the distance to the treasure
         distance = sqrt(static_cast<double>(pow(x1-x,2) + pow(y1-y,2)));
 
         // Check if they found the treasure
         if (distance == 0) {
-            cout << "Congratulations! You found the treasure in "<< moves << " moves!" << endl;
+            cout << "\nCongratulations! You found the treasure in "<< moves << " moves!" << endl;
             treasure = true;
         } else {
-            cout << "You are now " << distance << " units away from the treasure." << endl;
+            cout << "\nYou are now " << distance << " units away from the treasure." << endl;
         }
     }
 
