@@ -3,8 +3,10 @@ using namespace std;
 
 int main() {
 
+    // Declare variables
     double loanAmount, interestRate, monthlyPayment, totalInterestPaid, totalCost;
 
+    // Prompt for and read user inputs
     cout << "Please enter the amount of your student loan: ";
     cin >> loanAmount;
 

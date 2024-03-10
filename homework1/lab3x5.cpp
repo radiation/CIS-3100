@@ -16,7 +16,7 @@ int main () {
     for (int i=0; i<gridWidth; i++) // X axis
         for (int j=0; j<gridHeight; j++) // Y axis
             if (i==0 || i==gridWidth-1)
-                mapVisual[i][j] = "--";  // Draw the top and bottom borders
+                mapVisual[i][j] = " -";  // Draw the top and bottom borders
             else if (j==0 || j==gridHeight-1)
                 mapVisual[i][j] = " |"; // Draw the left and right borders
             else
