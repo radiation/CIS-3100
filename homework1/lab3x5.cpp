@@ -6,14 +6,16 @@ using namespace std;
 
 int main () {
 
+    // These need to be constants so we can use them to define the size of the array. We're using variables so 
+    // we can easily change the size of the grid or prompt the user for input in the future
+    const int gridWidth=30, gridHeight=30;
+    int highScore=0;
+
+    // Store map in two-dimensional array
+    string mapVisual[gridWidth][gridHeight];
+
     // This is absolutely not the best way to do this, but it's definitely the funniest
     for (char again = 'y'; again == 'y' || again == 'Y'; cin >> again) {
-
-        // These need to be constants so we can use them to define the size of the array
-        const int gridWidth=30, gridHeight=30;
-
-        // Store map in two-dimensional array
-        string mapVisual[gridWidth][gridHeight];
 
         // Populate the map grid
         for (int i=0; i<gridWidth; i++) // X axis
@@ -97,7 +99,10 @@ int main () {
 
             // Check if they found the treasure
             if (distance == 0) {
-                cout << "\nCongratulations! You found the treasure in "<< moves << " moves!" << endl;
+                if (highScore == 0 || moves < highScore)
+                    highScore = moves;
+                cout << "\nCongratulations! You found the treasure in " << moves << " moves!" << endl;
+                cout << "Your high score is " << highScore << " moves." << endl;
                 treasure = true;
             } else {
                 cout << "\nYou are now " << distance << " units away from the treasure." << endl;
