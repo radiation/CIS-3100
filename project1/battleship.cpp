@@ -6,7 +6,7 @@ using namespace std;
 // function prototypes
 void drawBoard(char playerBoard[10][10]);
 void placePlayerShip(char[10][10], int);
-void computerMove(char[10][10], vector< pair<int, int> >&);
+void computerMove(char[10][10], vector< pair<int, int> >&, vector< pair<int, int> >&);
 void playerMove(char[10][10], char[10][10]);
 bool checkWinner(char[10][10]);
 void initializeComputerMoves(vector< pair<int, int> >&);
@@ -33,7 +33,9 @@ int main() {
         }
     }
 
-    vector< pair<int, int> > availableMoves;
+    // We're also using vectors of pairs to keep track of moves and hits. By using a vector, when we're in hunt mode 
+    // we can randomly select a move without worrying about repeating moves or having to "reroll" a move
+    vector< pair<int, int> > availableMoves, hitList;
     initializeComputerMoves(availableMoves);
 
     for (const auto& ship : ships) {
@@ -72,7 +74,7 @@ int main() {
         playerMove(computerBoard, visibleComputerBoard);
 
         // Computer move
-        computerMove(playerBoard, availableMoves);
+        computerMove(playerBoard, availableMoves, hitList);
 
     }
 
@@ -88,23 +90,35 @@ void initializeComputerMoves(vector< pair<int, int> >& moves) {
     }
 }
 
-void computerMove(char board[10][10], vector< pair<int, int> >& moves) {
-
-    int index = rand() % moves.size();
-    int row = moves[index].first;
-    int col = moves[index].second;
-
-    if (board[row][col] == 'X') {
-        cout << "The computer hit your ship!" << endl;
-        board[row][col] = 'H';
-    } else {
-        cout << "The computer missed!" << endl;
-        board[row][col] = 'M';
+void removeMove(vector< pair<int, int> >& availableMoves, pair<int, int> move) {
+    auto it = lower_bound(availableMoves.begin(), availableMoves.end(), move);
+    if (it != availableMoves.end() && *it == move) {
+        availableMoves.erase(it);
     }
+}
 
-    // Remove the selected move
-    moves.erase(moves.begin() + index);
+// The vector of pairs is sorted, so we can use binary search to check if a move is available
+bool isMoveAvailable(const vector<pair<int, int>>& availableMoves, pair<int, int> move) {
+    return binary_search(availableMoves.begin(), availableMoves.end(), move);
+}
 
+
+void computerMove(char board[10][10], vector<pair<int, int>>& moves, vector<pair<int, int>>& hitList) {
+
+    // hunt mode
+    if (hitList.empty()) {
+        int index = rand() % moves.size();
+        int row = moves[index].first;
+        int col = moves[index].second;
+        removeMove(moves, make_pair(row, col));
+        // Assume we hit something
+        hitList.push_back(make_pair(row, col)); // Move to target mode
+        board[row][col] = 'H'; // Simulating a hit
+        cout << "Hit at " << row << ", " << col << endl;
+    // target mode
+    } else {
+        // Target mode logic here
+    }
 }
 
 void playerMove(char board[10][10], char visibleBoard[10][10]) {
@@ -116,7 +130,7 @@ void playerMove(char board[10][10], char visibleBoard[10][10]) {
         visibleBoard[row][col] = 'H';
     } else {
         cout << "You missed!" << endl;
-        visibleBoard[row][col] = 'M';
+        visibleBoard[row][col] = '*';
     }
 }
 

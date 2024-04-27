@@ -91,7 +91,7 @@ int main() {
         totalTax += remainingSalary * taxBrackets[numBrackets-1][1];
 
     // Make sure we display two decimal places
-    std::cout << std::fixed << std::setprecision(2);
+    cout << fixed << setprecision(2);
 
     // And final output
     cout << "This year you paid $" << totalTax << " in tax, so your net salary after tax is $" << salary - totalTax << ".\n";
