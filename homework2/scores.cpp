@@ -163,7 +163,7 @@ void print_array(int nums[], int k, string title, ofstream& outfile) {
 
 }
 
-// This function calculates the weighted average for each student
+// This function calculates the weighted average for each student from the three exam arrays and puts it into the weighted_avgs array
 void make_weighted_avg(int exam_one_scores[], int exam_two_scores[], int exam_three_scores[], int weighted_avgs[], int num_students) {
     for (int i=0; i<num_students; i++) {
         weighted_avgs[i] = (
@@ -174,7 +174,8 @@ void make_weighted_avg(int exam_one_scores[], int exam_two_scores[], int exam_th
     }
 }
 
-// This function finds the smallest number in an array and its position
+// This function finds the smallest number in an array and its position; it takes the array, the number of elements in the array, and
+// references to the smallest number and its position as parameters
 void find_smallest_and_pos(int nums[], int k, int &smallest, int &pos) {
     smallest = nums[0];
     pos = 0;

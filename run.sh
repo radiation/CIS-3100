@@ -2,4 +2,4 @@
 
 mkdir -p ../build
 
-g++ -o ../build/${1} ${1}.cpp && ../build/${1}
+g++ -std=c++20 -o ../build/${1} ${1}.cpp && ../build/${1}
