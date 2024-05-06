@@ -3,7 +3,6 @@
 #include <algorithm> // For std::transform
 #include <cctype>    // For std::toupper
 #include <vector>
-#include <cpr/cpr.h> // For making HTTP requests
 using namespace std;
 
 /*

@@ -4,14 +4,18 @@
 using namespace std;
 
 // function prototypes
-void drawBoard(char playerBoard[10][10]);
+void drawBoard(char[10][10]);
 void placePlayerShip(char[10][10], int);
-void computerMove(char[10][10], vector< pair<int, int> >&, vector< pair<int, int> >&);
+void computerMove(char[10][10], vector< pair<int, int> >&);
+bool isPlacementValid(char[10][10], int, int, char, int);
 void playerMove(char[10][10], char[10][10]);
 bool checkWinner(char[10][10]);
 void initializeComputerMoves(vector< pair<int, int> >&);
 
 int main() {
+
+    // Seed the random number generator
+    srand(time(0));
 
     bool gameOver = false;
 
@@ -44,21 +48,32 @@ int main() {
         drawBoard(playerBoard);
         cout << "Place your " << ship.first << " (" << ship.second << " spaces)" << endl;
         placePlayerShip(playerBoard, ship.second);
-
         // Place the computer's ships
         // Define orientation and randomize based on limitation
-        char orientation = (rand() % 2 == 0) ? 'h' : 'v';
-        int row = rand() % ((orientation == 'h') ? 10 : 10 - ship.second);
-        int col = rand() % ((orientation == 'v') ? 10 : 10 - ship.second);
+        bool placed = false;
+        while (!placed) {
+            char orientation = (rand() % 2 == 0) ? 'h' : 'v';
+            int row = rand() % ((orientation == 'h') ? 10 : 10 - ship.second);
+            int col = rand() % ((orientation == 'v') ? 10 : 10 - ship.second);
+            cout << "Computer trying to place " << ship.first << " at (" << row << ", " << col << ") " << orientation << endl;
 
-        // Place the ship
-        if (orientation == 'h')
-            for (int j=0; j<ship.second; j++)
-                computerBoard[row][col+j] = 'X';
-        else
-            for (int j=0; j<ship.second; j++)
-                computerBoard[row+j][col] = 'X';
+            // Check if placement is valid
+            if (isPlacementValid(computerBoard, row, col, orientation, ship.second)) {
+                cout << "Computer placed " << ship.first << " at (" << row << ", " << col << ") " << orientation << endl;
 
+                // Place the ship
+                if (orientation == 'h') {
+                    for (int j = 0; j < ship.second; j++) {
+                        computerBoard[row][col + j] = 'X';
+                    }
+                } else { // Vertical orientation
+                    for (int j = 0; j < ship.second; j++) {
+                        computerBoard[row + j][col] = 'X';
+                    }
+                }
+                placed = true;
+            }
+        }
     }
 
     // Let's play the game
@@ -74,10 +89,15 @@ int main() {
         playerMove(computerBoard, visibleComputerBoard);
 
         // Computer move
-        computerMove(playerBoard, availableMoves, hitList);
+        computerMove(playerBoard, availableMoves);
 
     }
 
+    if (checkWinner(playerBoard)) {
+        cout << "You win!" << endl;
+    } else {
+        cout << "You lose!" << endl;
+    }
     return 0;
 }
 
@@ -90,6 +110,7 @@ void initializeComputerMoves(vector< pair<int, int> >& moves) {
     }
 }
 
+// Function to remove a move from the list of available moves
 void removeMove(vector< pair<int, int> >& availableMoves, pair<int, int> move) {
     auto it = lower_bound(availableMoves.begin(), availableMoves.end(), move);
     if (it != availableMoves.end() && *it == move) {
@@ -97,36 +118,54 @@ void removeMove(vector< pair<int, int> >& availableMoves, pair<int, int> move) {
     }
 }
 
-// The vector of pairs is sorted, so we can use binary search to check if a move is available
-bool isMoveAvailable(const vector<pair<int, int>>& availableMoves, pair<int, int> move) {
-    return binary_search(availableMoves.begin(), availableMoves.end(), move);
-}
+// Function to make a move for the computer
+void computerMove(char board[10][10], vector< pair<int, int> >& moves) {
 
+    int index = rand() % moves.size();
+    int row = moves[index].first;
+    int col = moves[index].second;
 
-void computerMove(char board[10][10], vector<pair<int, int>>& moves, vector<pair<int, int>>& hitList) {
-
-    // hunt mode
-    if (hitList.empty()) {
-        int index = rand() % moves.size();
-        int row = moves[index].first;
-        int col = moves[index].second;
-        removeMove(moves, make_pair(row, col));
-        // Assume we hit something
-        hitList.push_back(make_pair(row, col)); // Move to target mode
-        board[row][col] = 'H'; // Simulating a hit
-        cout << "Hit at " << row << ", " << col << endl;
-    // target mode
+    if (board[row][col] == 'X') {
+        cout << "The computer hit your ship!" << endl;
+        board[row][col] = 'H';
     } else {
-        // Target mode logic here
+        cout << "The computer missed!" << endl;
+        board[row][col] = 'M';
     }
+
+    // Remove the selected move
+    moves.erase(moves.begin() + index);
+
 }
 
+// Function to check if placing a ship at a given position and orientation conflicts with existing ships
+bool isPlacementValid(char board[10][10], int row, int col, char orientation, int shipSize) {
+    if (orientation == 'h') {
+        // Check horizontally for conflicts
+        for (int j = col; j < col + shipSize; j++) {
+            if (j >= 10 || board[row][j] != ' ') {
+                return false; // Conflict detected
+            }
+        }
+    } else { // Vertical orientation
+        // Check vertically for conflicts
+        for (int i = row; i < row + shipSize; i++) {
+            if (i >= 10 || board[i][col] != ' ') {
+                return false; // Conflict detected
+            }
+        }
+    }
+    return true; // No conflict detected
+}
+
+// Function to place a ship on the board
 void playerMove(char board[10][10], char visibleBoard[10][10]) {
     int row, col;
     cout << "Enter your move (row, column): ";
     cin >> row >> col;
     if (board[row][col] == 'X') {
         cout << "You hit a ship!" << endl;
+        board[row][col] = 'H';
         visibleBoard[row][col] = 'H';
     } else {
         cout << "You missed!" << endl;
@@ -134,6 +173,7 @@ void playerMove(char board[10][10], char visibleBoard[10][10]) {
     }
 }
 
+// Function to check if the player or computer has won
 bool checkWinner(char board[10][10]) {
 
     int count = 0;
@@ -143,8 +183,6 @@ bool checkWinner(char board[10][10]) {
                 count++;
         }
     }
-    cout << "Count: " << count << endl;
-    cout << "Winner: " << (count == 0) << endl;
     return (count == 0);
 
 }
@@ -166,6 +204,7 @@ void drawBoard(char playerBoard[10][10]) {
 
 }
 
+// Function to place a ship on the board
 void placePlayerShip(char board[10][10], int shipLength) {
     bool valid = false;
     while (!valid) {

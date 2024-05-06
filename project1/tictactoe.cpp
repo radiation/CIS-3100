@@ -1,9 +1,13 @@
+/*
+As a fun learning opportunity, I moved the function to draw the board to a library file so we can use it for both tic-tac-toe and battleship.
+*/
+#include "board.h"
 #include <iostream>
 #include <ctime>
 using namespace std;
 
 // function prototypes
-void drawGrid(char grid[3][3]);
+void drawGrid(char grid[3][3], int width, int height);
 char checkWinner(char grid[3][3]);
 
 
@@ -15,7 +19,7 @@ int main() {
 
     char grid[3][3] = {{' ', ' ', ' '}, {' ', ' ', ' '}, { ' ', ' ', ' '}};
 
-    cout << "Welcome to Tic Tac Toe!";
+    cout << "Welcome to Tic Tac Toe!\n\n";
 
     while (!gameOver) {
 
@@ -29,7 +33,8 @@ int main() {
 
         if (grid[row][col] != ' ' || row < 0 || row > 2 || col < 0 || col > 2)
             cout << "Invalid move! Try again." << endl;
-        else{
+        else {
+
             // Assign the player's move to the grid
             grid[row][col] = player;
 
@@ -37,7 +42,7 @@ int main() {
             turn++;
 
             // Display the grid
-            drawGrid(grid);
+            drawGrid(grid, 3, 3);
 
             // Check for a winner
             char winner = checkWinner(grid);
@@ -48,6 +53,7 @@ int main() {
 
             // Set to next player
             player = player == 'X' ? 'O' : 'X';
+
         }
 
     }
@@ -55,16 +61,24 @@ int main() {
     return 0;
 }
 
+// Draw the player and computer boards; we have to pass the width and height of the grid because arrays in C++ are annoying
+void drawGrid(char grid[3][3], int width, int height) {
 
-void drawGrid(char grid[3][3]) {
-    for (int i=0; i<3; i++) {
-        for (int j=0; j<3; j++) {
-            cout << grid[i][j];
+    cout <<"\n+ - - - - - +\n";
+    for (int i=0; i<height; i++) {
+        cout << "| ";
+        for (int j=0; j<width; j++) {
+            cout << grid[i][j] << " | ";
         }
-        cout << endl;
+        if (i != height-1)
+            cout << "\n| - + - + - |\n";
+        else
+            cout << "\n+ - - - - - +\n";
     }
+
 }
 
+// Pass a reference to the grid and return the winner as a char
 char checkWinner(char grid[3][3]) {
 
     // Check rows
