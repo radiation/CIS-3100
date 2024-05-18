@@ -54,26 +54,47 @@ class Stock {
 void addStock(vector<Stock>& portfolio);
 void removeStock(vector<Stock>& portfolio);
 void displayPortfolio(vector<Stock>& portfolio);
+int displayMenu();
 
 // Main function
 int main() {
-    int size;
-    cout << "Welcome to the portfolio manager!" << endl;
-    cout << "How many stocks would you like to add to your portfolio?" << endl;
-    cin >> size;
 
-    // Define the variables we'll be using to keep track of the portfolio
+    int choice = displayMenu();
     vector<Stock> portfolio;
-    portfolio.reserve(size);
 
-    for (int i=0; i<size; i++) {
-        addStock(portfolio);
-        cout << endl;
+    // Loop until the user selects to quit
+    while(choice != 4) {
+        switch(choice) {
+            case 1:
+                addStock(portfolio);
+                break;
+            case 2:
+                removeStock(portfolio);
+                break;
+            case 3:
+                displayPortfolio(portfolio);
+                break;
+            default:
+                cout << "Invalid choice." << endl;
+        }
+        choice = displayMenu();
+
     }
 
     displayPortfolio(portfolio);
 
     return 0;
+}
+
+int displayMenu() {
+    int choice;
+    cout << "Please select an option:" << endl;
+    cout << "1. Add a stock" << endl;
+    cout << "2. Remove a stock" << endl;
+    cout << "3. Display portfolio" << endl;
+    cout << "4. Quit" << endl;
+    cin >> choice;
+    return choice;
 }
 
 // Add a stock to the user's portfolio
@@ -91,10 +112,10 @@ void addStock(vector<Stock>& portfolio) {
     cout << "# Shares: ";
     cin >> shares;
 
-    cout << "Purchase price: " << endl;
+    cout << "Purchase price: ";
     cin >> purchase_price;
 
-    cout << "Current price: " << endl;
+    cout << "Current price: ";
     cin >> current_price;
 
     Stock new_stock(ticker, shares, purchase_price, current_price);
