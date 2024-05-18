@@ -17,22 +17,20 @@ class DataHandler:
             dataset = [row for row in csv_reader]
         return dataset
 
+    # Shuffle and split the dataset into training and testing sets based on the test_size
     def train_test_split(self, dataset, test_size):
-        # Shuffle the dataset to ensure randomness
         shuffle(dataset)
-        # Determine the split index based on the test size
         split_index = int(len(dataset) * (1 - test_size))
-        # Split the dataset into training and testing sets
         return dataset[:split_index], dataset[split_index:]
 
+    # Separate features & labels from the dataset and convert feature values to floats for computation
+    # Assumes the last column contains the labels
     def separate_features_labels(self, dataset):
-        # Separate the features and labels from the dataset
-        # Convert the feature values to floats for computation
-        features = [list(map(float, data[1:-1])) for data in dataset]  # Exclude the ID and label
-        labels = [data[-1] for data in dataset]  # The label is the last element in each row
+        features = [list(map(float, data[1:-1])) for data in dataset]
+        labels = [data[-1] for data in dataset]
         return features, labels
 
-# Define a base class for machine learning classifiers
+# Define a base class for ML classifiers so we can reuse the predict & report methods
 class MLClassifier:
     def __init__(self):
         # Initialize the classifier
@@ -72,8 +70,7 @@ class MLClassifier:
 # Naive Bayes classifier
 class NaiveBayesClassifier(MLClassifier):
     def __init__(self):
-        # Initialize dictionaries to store the means, standard deviations,
-        # and class probabilities for each class
+        # Dicts for mean, stdev, and class probabilities
         self.means = {}
         self.stds = {}
         self.class_probabilities = {}
@@ -121,7 +118,7 @@ class NaiveBayesClassifier(MLClassifier):
 
 # K Nearest Neighbors classifier
 class KNNClassifier(MLClassifier):
-    def __init__(self, k=3):
+    def __init__(self, k=5):
         # Initialize the number of neighbors to consider
         self.k = k
 
@@ -155,10 +152,9 @@ class KNNClassifier(MLClassifier):
 
 # Support Vector Machine classifier
 class SVMClassifier(MLClassifier):
-    def __init__(self, learning_rate=0.001, lambda_param=0.01, n_iters=1000):
+    def __init__(self, learning_rate=0.001, lambda_param=0.01):
         self.learning_rate = learning_rate
         self.lambda_param = lambda_param
-        self.n_iters = n_iters
         self.w = None
         self.b = None
 
@@ -173,7 +169,7 @@ class SVMClassifier(MLClassifier):
         y = [1 if label == "Good" else -1 for label in y]
 
         # Gradient descent
-        for _ in range(self.n_iters):
+        for _ in range(n_samples):
             for idx, x_i in enumerate(X):
                 condition = y[idx] * (self.dot_product(x_i, self.w) - self.b) >= 1
                 if condition:
@@ -227,25 +223,27 @@ def main():
     for classifier in [NaiveBayesClassifier(), KNNClassifier(), SVMClassifier()]:
 
         print(f"\n{classifier}:\n")
-        # Fit the classifier on the training data
-        # This process involves calculating necessary statistical parameters for the Naive Bayes algorithm
+
+        start_time = time.time()
         classifier.fit(train_features, train_labels)
+        fit_time = time.time() - start_time
 
-        # Predict the class labels for the test set features
-        # The predict method uses the trained model to estimate the labels of unseen data
+        start_time = time.time()
         predictions = classifier.predict(test_features)
+        predict_time = time.time() - start_time
 
-        # Generate a classification report comparing the true labels and predicted labels
-        # This report includes precision, recall, F1-score, and accuracy for each class
         report = classifier.classification_report(test_labels, predictions)
 
-        # Print out the classification report for each class
         for label, metrics in report.items():
             print(f"\tClass {label}:")
             for metric, value in metrics.items():
                 print(f"\t\t{metric}: {value:.2f}")
             print()
 
+        print(f"\tFit time: {fit_time:.4f}s")
+        print(f"\tPrediction time: {predict_time:.4f}s")
+
+    print()
 
 # This block checks if this script is the main program and runs the main function
 if __name__ == "__main__":
