@@ -77,7 +77,7 @@ void dynamicMemoryAllocation() {
 
 void smartPointers() {
     // Rewrite the dynamic memory allocation task using std::unique_ptr
-    std::unique_ptr<int[]> arr(new int[10]);
+    unique_ptr<int[]> arr(new int[10]);
 
     // Initialize the array with values (1 through 10) using a loop
     for (int i = 0; i < 10; i++) {
@@ -91,9 +91,9 @@ void smartPointers() {
     }
     cout << "Sum of the array: " << sum << endl;
 
-    // No need to manually deallocate memory, as std::unique_ptr handles it automatically
+    // No need to manually deallocate memory, as unique_ptr handles it automatically
     // No need to set the pointer to nullptr, as the smart pointer goes out of scope and cleans up
-    // Advantages of using std::unique_ptr:
+    // Advantages of using unique_ptr:
     // - Automatic memory management, preventing memory leaks
     // - Clear ownership semantics, ensuring proper resource management
     // - RAII (Resource Acquisition Is Initialization) guarantees proper cleanup
